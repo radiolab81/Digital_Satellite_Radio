@@ -140,11 +140,6 @@ baseband file), format, sound-card output (player command) and/or WAV recording.
 
 ![decoder GUI](gui/screenshots/decoder_gui.png)
 
-Status: tested headless (Qt "offscreen") with PyQt5 against the real binaries - building the command
-line, file and TCP output, decoder counter, programme list parsing, tuning by click/Prev/Next
-(the recorded WAV switches between the stations) and clean shutdown. Not yet tried on a real
-desktop session with a sound card; the PySide6 fallback in `dsr_gui_common.py` is untested.
-
 ## Encoder as a permanent server
 `-o tcp://127.0.0.1:PORT` keeps listening for the whole run time: decoders may connect,
 disconnect and reconnect at any time, several at once. Without any client the stream is

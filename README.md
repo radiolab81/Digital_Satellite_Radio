@@ -113,6 +113,38 @@ Same commands over a local control port for scripts/GUIs:
     echo l | nc -q1 127.0.0.1 6000        # programme list
     echo 5 | nc -q1 127.0.0.1 6000        # tune station 5
 
+## Graphical front ends (Qt)
+Two optional GUIs in `gui/` remote-control the console programs - no signal processing happens in
+Python. They build the command line, start `dsr_encoder` / `dsr_decoder`, show the log and
+(decoder) talk to the running process through its run-time commands.
+
+    sudo apt install python3-pyqt5          # Debian 13
+    make                                    # the GUIs start the binaries built here
+    python3 gui/dsr_encoder_gui.py          # virtual transmitter
+    python3 gui/dsr_decoder_gui.py          # virtual DSR radio
+
+**Encoder GUI** - station table for up to 16 stations (on/off, 8-character name, programme type and
+sub type, music/speech, source = file, internet URL, `tone:` or `raw:`), "Add station" menu
+(file / URL / test tone / presets from `gui/stations_presets.csv`), CSV import/export of the whole
+"programme landscape", output format (`cs16`, `cs8`, `cf32`, `real16`), samples per symbol, TCP port
+or file, real-time/level/loop/mirror options, a live data-rate display, the generated command line
+(copyable), log window and a counter of connected decoders. Changing stations needs **Apply
+(restart)**; connected decoders reconnect by themselves. Settings are remembered between sessions.
+
+![encoder GUI](gui/screenshots/encoder_gui.png)
+
+**Decoder GUI** - "radio front panel" with an 8-character station display, programme offer table
+(click to tune), Prev / Next / Refresh, lamps for stream, frame lock, block lock and mirrored
+spectrum, signal-quality bar from the BCH statistics, source selection (encoder TCP port or
+baseband file), format, sound-card output (player command) and/or WAV recording.
+
+![decoder GUI](gui/screenshots/decoder_gui.png)
+
+Status: tested headless (Qt "offscreen") with PyQt5 against the real binaries - building the command
+line, file and TCP output, decoder counter, programme list parsing, tuning by click/Prev/Next
+(the recorded WAV switches between the stations) and clean shutdown. Not yet tried on a real
+desktop session with a sound card; the PySide6 fallback in `dsr_gui_common.py` is untested.
+
 ## Encoder as a permanent server
 `-o tcp://127.0.0.1:PORT` keeps listening for the whole run time: decoders may connect,
 disconnect and reconnect at any time, several at once. Without any client the stream is
@@ -120,7 +152,8 @@ discarded (the encoder keeps its real-time clock and keeps consuming live source
 A client that falls behind by more than ~1.5 s of data is dropped so it can never stall
 the encoder. The decoder reconnects automatically if the encoder is restarted.
 `--loop` repeats file sources forever.
-Use `--play "pw-play --rate 32000 --channels 2 --format s16 -"` for other players.
+Use `--play="pw-play --rate 32000 --channels 2 --format s16 -"` for other players
+(the command must be attached with `=`).
 
 ## Files
 dsr.hpp (protocol: BCH, 16/14-bit coding, frames, scrambler, PA/SK, PI),

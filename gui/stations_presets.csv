@@ -1,0 +1,5 @@
+# Favourite stations for the encoder GUI (menu "Add station > From presets").
+# columns: name,pty,kind,source      (pty 0..15, kind music|speech)
+name,pty,kind,source
+47fm,1,speech,https://47fm.ice.infomaniak.ch/47fm-80.aac
+Test tone,10,music,"tone:440,660"
